@@ -14,12 +14,22 @@ import {
 
 import { IconButton } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
+import Swal from "sweetalert2";
 
 function App() {
   const [todos, setTodos] = useState([]);
   const [newTodo, setNewTodo] = useState("");
 
   const addTodo = () => {
+    if (newTodo.trim() === "") {
+      Swal.fire({
+        title: "Oops...",
+        text: "You should enter a text!",
+        icon: "warning",
+        confirmButtonText: "Ok",
+      });
+      return;
+    }
     setTodos([...todos, { text: newTodo, completed: false }]);
     setNewTodo("");
   };
