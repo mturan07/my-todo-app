@@ -17,6 +17,8 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import Swal from "sweetalert2";
 import { Tabs, Tab } from "@mui/material";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import TodoItem from "./components/TodoItem";
+import TodoInput from "./components/TodoInput";
 
 function App() {
   const [todos, setTodos] = useState([]);
@@ -33,8 +35,8 @@ function App() {
     return true;
   });
 
-  const addTodo = () => {
-    if (newTodo.trim() === "") {
+  const addTodo = (todoText) => {
+    if (todoText.trim() === "") {
       Swal.fire({
         title: "Oops...",
         text: "You should enter a text!",
@@ -43,8 +45,7 @@ function App() {
       });
       return;
     }
-    setTodos([...todos, { text: newTodo, completed: false }]);
-    setNewTodo("");
+    setTodos([...todos, { text: todoText, completed: false }]);
   };
 
   const deleteTodo = (index) => {
@@ -104,17 +105,7 @@ function App() {
   return (
     <Container maxWidth="sm">
       <h1>Todo App</h1>
-      <TextField
-        label="New Todo"
-        variant="outlined"
-        fullWidth
-        value={newTodo}
-        onChange={(e) => setNewTodo(e.target.value)}
-        margin="normal"
-      />
-      <Button variant="contained" color="primary" onClick={addTodo}>
-        Add Todo
-      </Button>
+      <TodoInput onAddTodo={addTodo} />
 
       <Tabs value={tabValue} onChange={handleTabChange} centered>
         <Tab label="All" />
@@ -124,39 +115,14 @@ function App() {
 
       <List>
         {filteredTodos.map((todo, index) => (
-          <ListItem key={index} dense>
-            <Checkbox
-              checked={todo.completed}
-              onChange={() => toggleTodo(index)}
-            />
-            <ListItemText
-              primary={todo.text}
-              sx={{
-                color:
-                  tabValue === 0
-                    ? todo.completed
-                      ? "blue"
-                      : "black"
-                    : "black",
-              }}
-            />
-
-            <IconButton
-              onClick={() => toggleTodo(index)}
-              color="default"
-              style={{ color: "green" }}
-            >
-              <CheckCircleIcon />
-            </IconButton>
-
-            <IconButton
-              onClick={() => deleteTodo(index)}
-              color="default"
-              style={{ color: "red" }}
-            >
-              <DeleteIcon />
-            </IconButton>
-          </ListItem>
+          <TodoItem
+            key={index}
+            todo={todo}
+            index={index}
+            toggleTodo={toggleTodo}
+            deleteTodo={deleteTodo}
+            tabValue={tabValue}
+          />
         ))}
       </List>
     </Container>
